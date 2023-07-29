@@ -14,15 +14,19 @@ struct queue{
 };
 
 static struct queue_item *new_queue_item(struct queue *my_queue,struct nfa_node *current_node,char *location){
-    my_queue->tail->next_item = malloc(sizeof(struct queue_item));
-    my_queue->tail = my_queue->tail->next_item;
-    my_queue->tail->current_node = current_node;
-    my_queue->tail->location = location;
-    my_queue->tail->next_item = NULL;
-    if(!my_queue->head){
-        my_queue->head = my_queue->tail;
+    struct queue_item *tmp_queue_item;
+    tmp_queue_item = malloc(sizeof(struct queue_item));
+    if (my_queue->tail){
+        my_queue->tail->next_item = tmp_queue_item;
     }
-    return my_queue->tail;
+    my_queue->tail = tmp_queue_item;
+    tmp_queue_item->current_node = current_node;
+    tmp_queue_item->location = location;
+    tmp_queue_item->next_item = NULL;
+    if(!my_queue->head){
+        my_queue->head = tmp_queue_item;
+    }
+    return tmp_queue_item;
 }
 
 static void free_queue(struct queue *my_queue){
