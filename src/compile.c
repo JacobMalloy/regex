@@ -58,13 +58,17 @@ struct nfa_path *add_nfa_path_epsilon(struct nfa_node *node,struct nfa_node *nex
     return return_value;
 }
 
-static int char_in_string(char needle,const char *haystack){
-    while(*haystack){
-        if(*haystack==needle){
-            return 1;
-        }
+
+static char get_escaped_character(char ** location){
+    char return_char;
+    if(**location == '\\'){
+        return_char = *((*location)+1);
+        (*location)+=1;
+    }else{
+        return_char = **(location);
     }
-    return 0;
+    (*location)+=1;
+    return return_char;
 }
 
 static struct expression character_group(struct text_info *text_info){
@@ -77,11 +81,10 @@ static struct expression character_group(struct text_info *text_info){
         text_info->location += 1;
         while (*(text_info->location) && *(text_info->location)!=']'){
             char c,c2;
-            c=*(text_info->location);
-            text_info->location++;
+            c=get_escaped_character(&text_info->location);
             if (*(text_info->location) == '-'){
                 text_info->location += 1;
-                c2 = *(text_info->location);
+                c2 = get_escaped_character(&text_info->location);
                 for(int i = c;i<=c2;i++){
                     SET_IN_BITFIELD(tmp_path->characters,i)
                 }
@@ -92,13 +95,9 @@ static struct expression character_group(struct text_info *text_info){
         if (*(text_info->location)!=']'){
             PARSE_ERROR("Expected closing ]");
         }
-        if (*(text_info->location) != ']'){
-            PARSE_ERROR("Missing closing )")
-        }
         text_info->location += 1;
     }else{
-        SET_IN_BITFIELD(tmp_path->characters,*(text_info->location))
-        text_info->location += 1;
+        SET_IN_BITFIELD(tmp_path->characters,get_escaped_character(&text_info->location))
     }
     return return_value;
 }
