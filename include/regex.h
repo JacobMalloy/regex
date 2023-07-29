@@ -17,7 +17,10 @@ struct nfa_node{
     size_t path_list_size;
     struct nfa_path *data;
     struct{
-        char accept : 1;
+        uint64_t accept : 1;
+        uint64_t visited : 1;
+        uint64_t start_group : 1;
+        uint64_t end_group : 1;
     };
 };
 
