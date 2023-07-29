@@ -9,6 +9,9 @@ FLAGS="${INCLUDE_FLAGS} ${C_FLAGS}"
 rm -rf objs
 mkdir objs
 
+rm -rf libs
+mkdir libs
+
 
 rm -rf compiled_tests
 mkdir compiled_tests
@@ -19,8 +22,15 @@ done
 
 wait
 
+
+$CC objs/*.o -o libs/regex.so -shared $FLAGS &
+ar -crs libs/regex.a objs/*.o
+
 for i in tests/*.c; do
-    $CC $i objs/*.o -o compiled_tests/$(basename $i .c) $FLAGS
+    $CC $i objs/*.o -o compiled_tests/$(basename $i .c) $FLAGS &
 done
 
-./compiled_tests/main
+wait
+
+#./compiled_tests/main
+./compiled_tests/test
