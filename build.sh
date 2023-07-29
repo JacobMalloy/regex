@@ -9,12 +9,18 @@ FLAGS="${INCLUDE_FLAGS} ${C_FLAGS}"
 rm -rf objs
 mkdir objs
 
+
+rm -rf compiled_tests
+mkdir compiled_tests
+
 for i in src/*.c; do
     $CC $i -o "objs/$(basename $i .c).o" -c $FLAGS &
 done
 
 wait
 
-$CC objs/*.o -o regex $FLAGS
+for i in tests/*.c; do
+    $CC $i objs/*.o -o compiled_tests/$(basename $i .c) $FLAGS
+done
 
-./regex
+./compiled_tests/main
