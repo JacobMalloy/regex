@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 CC="clang"
-C_FLAGS="-O0 -g -P"
+C_FLAGS="-O0 -g -fpic -Wall -Wextra"
 INCLUDE_FLAGS="-Iinclude"
 
 FLAGS="${INCLUDE_FLAGS} ${C_FLAGS}"
