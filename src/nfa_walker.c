@@ -59,7 +59,8 @@ int match(struct nfa_node *head,char *string){
     struct queue_item *current_item;
     struct nfa_node head_node;
     struct nfa_path head_path[2];
-    my_queue.head=0;
+    my_queue.head = 0;
+    my_queue.tail = 0;
 
     head_node.path_list_length = 2;
     head_node.path_list_size = 0;
@@ -77,7 +78,7 @@ int match(struct nfa_node *head,char *string){
     new_queue_item(&my_queue,&head_node,string);
     while((current_item = pop_queue_item(&my_queue))){
         char c =  *(current_item->location);
-        for(int i=0;i<current_item->current_node->path_list_length;i++){
+        for(size_t i=0;i<current_item->current_node->path_list_length;i++){
             if(GET_IN_BITFIELD(current_item->current_node->data[i].characters,0)){
                 new_queue_item(&my_queue,current_item->current_node->data[i].next_node,current_item->location);
             }
