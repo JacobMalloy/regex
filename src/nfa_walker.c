@@ -51,31 +51,6 @@ static struct queue_item *pop_queue_item(struct queue *my_queue){
 }
 
 
-int complete_match(struct nfa_node *head,char *string){
-    struct queue my_queue;
-    struct queue_item *current_item;
-    my_queue.head=0;
-
-    new_queue_item(&my_queue,head,string);
-    while((current_item = pop_queue_item(&my_queue))){
-        char c =  *(current_item->location);
-        for(int i=0;i<current_item->current_node->path_list_length;i++){
-            if(GET_IN_BITFIELD(current_item->current_node->data[i].characters,0)){
-                new_queue_item(&my_queue,current_item->current_node->data[i].next_node,current_item->location);
-            }
-            if(GET_IN_BITFIELD(current_item->current_node->data[i].characters,c) && c != '\0'){
-                new_queue_item(&my_queue,current_item->current_node->data[i].next_node,current_item->location+1);
-            }
-        }
-        if(c == '\0' && current_item->current_node->accept){
-            free_queue(&my_queue);
-            free(current_item);
-            return 1;
-        }
-        free(current_item);
-    }
-    return 0;
-}
 
 
 
