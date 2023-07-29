@@ -25,6 +25,7 @@ struct nfa_node{
 };
 
 struct nfa_node *compile(char *string);
+void regex_free(struct nfa_node *path);
 int complete_match(struct nfa_node *head,char *string);
 int match(struct nfa_node *head,char *string);
 
