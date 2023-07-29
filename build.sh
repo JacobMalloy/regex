@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 CC="clang"
 C_FLAGS="-O0 -g -fpic -Wall -Wextra"
-INCLUDE_FLAGS="-Iinclude"
+INCLUDE_FLAGS="-Iinclude -Iinternal_include"
 
 FLAGS="${INCLUDE_FLAGS} ${C_FLAGS}"
 
