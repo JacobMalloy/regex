@@ -5,14 +5,14 @@
 
 
 
-int main(int argc, char **argv){
+int main(){
     struct nfa_node *head;
-    head = compile("bad?c");
+    head = compile("\\\\");
     printf("Success maybe\n");
 
-    char *search = "baddc";
+    char *search = "\\";
 
-    printf("The string is%s a match\n",complete_match(head,search)?"":" not");
+//    printf("The string is%s a match\n",complete_match(head,search)?"":" not");
     printf("The string %s a match\n",match(head,search)?"has":"does not have");
 
     return 0;
