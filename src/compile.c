@@ -30,9 +30,8 @@ static struct expression expression(struct text_info *text_info);
 static struct nfa_node *new_nfa_node(){
     struct nfa_node *return_value;
     return_value = malloc(sizeof(struct nfa_node));
+    memset(return_value,0,sizeof(struct nfa_node));
     return_value->path_list_size = 2;
-    return_value->path_list_length = 0;
-    return_value->accept = 0;
     return_value->data = malloc(return_value->path_list_size*sizeof(struct nfa_path));
     return return_value;
 }
@@ -107,6 +106,8 @@ static struct expression group(struct text_info *text_info){
     if (*(text_info->location) == '('){
         text_info->location += 1;
         return_value = expression(text_info);
+        return_value.start->start_group=1;
+        return_value.end->end_group=1;
         if (*(text_info->location) != ')'){
             PARSE_ERROR("Missing closing )")
         }
