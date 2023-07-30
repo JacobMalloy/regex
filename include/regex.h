@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
 #define SET_IN_BITFIELD(f,x) {int x_new = x;f[x_new/64] |= ((uint64_t)1<<(x_new%64));}
+#define COPY_TO_BITFIELD(f,x) {memmove(f,x,sizeof(f));}
 #define GET_IN_BITFIELD(f,x) ({int x_new = x;(f[x_new/64]>>(x_new%64))&1;})
 
 struct nfa_path{
