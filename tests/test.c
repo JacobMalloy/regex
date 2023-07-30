@@ -12,10 +12,10 @@ void test(char * regex, char *string, struct nfa_node *head, int should_pass){
     }
     if (match(head,string)!=should_pass){
         regex_free(head);
-        fprintf(stderr,"Failed!\nstring:%s\nregex:%s\n%s\n\n",string,regex,!should_pass?"Did not match":"Matched");
+        fprintf(stderr,"Failed!\nstring:%s\nregex:%s\n%s\n\n",string,regex,should_pass?"Did not match":"Matched");
         exit(1);
     }else{
-        fprintf(stderr,"Passed!\nstring:%s\nregex:%s\n%s\n\n",string,regex,should_pass?"Did not match":"Matched");
+        fprintf(stderr,"Passed!\nstring:%s\nregex:%s\n%s\n\n",string,regex,!should_pass?"Did not match":"Matched");
     }
     if(should_free){
         regex_free(head);
