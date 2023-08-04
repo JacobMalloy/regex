@@ -16,7 +16,7 @@ enum ast_node_type{
 struct ast_node{
     enum ast_node_type type_tag;
     struct {
-        size_t group_parent:1;
+        size_t group_start:1;
     };
     union{
         struct{
@@ -47,6 +47,8 @@ struct ast_node{
 // AST COMPILER
 
 struct ast_node *compile_to_ast(char *string);
+size_t count_ast_nodes(struct ast_node *head);
+void free_ast(struct ast_node *head);
 
 
 #endif //__INTERNAL_REGEX_H__

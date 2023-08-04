@@ -6,7 +6,7 @@
 
 
 int main(){
-    struct nfa_node *head;
+    regex_t head;
     head = compile("\\\\");
     printf("Success maybe\n");
 

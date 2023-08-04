@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-void test(char * regex, char *string, struct nfa_node *head, int should_pass){
+void test(char * regex, char *string, regex_t head, int should_pass){
     int should_free = 0;
     if(!head){
         should_free = 1;

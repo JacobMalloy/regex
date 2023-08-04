@@ -1,4 +1,5 @@
 #include "regex.h"
+#include "backtracking_nfa.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -54,11 +55,12 @@ static struct queue_item *pop_queue_item(struct queue *my_queue){
 
 
 
-int match(struct nfa_node *head,char *string){
+int match(regex_t regex_data,char *string){
     struct queue my_queue;
     struct queue_item *current_item;
     struct nfa_node head_node;
     struct nfa_path head_path[2];
+    struct nfa_node * const head = (struct nfa_node *)regex_data;
     my_queue.head = 0;
     my_queue.tail = 0;
 

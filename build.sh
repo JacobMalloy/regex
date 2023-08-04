@@ -3,7 +3,9 @@ CC="clang"
 C_FLAGS="-O0 -g -fpic -Wall -Wextra"
 INCLUDE_FLAGS="-Iinclude -Iinternal_include"
 
-FLAGS="${INCLUDE_FLAGS} ${C_FLAGS}"
+DEFINES="-DBACKTRACKING_NFA"
+
+FLAGS="${DEFINES} ${INCLUDE_FLAGS} ${C_FLAGS}"
 
 
 rm -rf objs

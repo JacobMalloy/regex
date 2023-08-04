@@ -79,6 +79,7 @@ static struct ast_node *group(struct text_info *text_info){
     if (*(text_info->location) == '('){
         text_info->location += 1;
         return_value = expression(text_info);
+        return_value->group_start = 1;
         if (*(text_info->location) != ')'){
             PARSE_ERROR("Missing closing )")
         }
