@@ -95,12 +95,29 @@ static struct ast_node *atom(struct text_info *text_info){
     return_node = group(text_info);
     switch (*(text_info->location)){
         case '*':
+            tmp_node = new_ast_node();
+            tmp_node->type_tag = ast_node_type_range;
+            tmp_node->range_child = return_node;
+            tmp_node->range_low = 0;
+            tmp_node->range_high = 0;
+            text_info->location += 1;
+            return_node = tmp_node;
+        break;
         case '+':
+            tmp_node = new_ast_node();
+            tmp_node->type_tag = ast_node_type_range;
+            tmp_node->range_child = return_node;
+            tmp_node->range_low = 1;
+            tmp_node->range_high = 0;
+            text_info->location += 1;
+            return_node = tmp_node;
+        break;
         case '?':
             tmp_node = new_ast_node();
-            tmp_node->type_tag = ast_node_type_unary;
-            tmp_node->unary_child = return_node;
-            tmp_node->unary_operator = *(text_info->location);
+            tmp_node->type_tag = ast_node_type_range;
+            tmp_node->range_child = return_node;
+            tmp_node->range_low = 0;
+            tmp_node->range_high = 1;
             text_info->location += 1;
             return_node = tmp_node;
         break;
@@ -116,6 +133,7 @@ static struct ast_node *atom(struct text_info *text_info){
         default:
         break;
     }
+
     return return_node;
 }
 
