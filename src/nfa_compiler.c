@@ -86,32 +86,28 @@ static struct expression dispatch_binary(struct ast_node *ast){
     return return_value;
 }
 
-static struct expression dispatch_unary(struct ast_node *ast){
+static struct expression dispatch_range(struct ast_node *ast){
     struct expression b1,return_value;
     return_value.start = new_nfa_node();
     return_value.end = new_nfa_node();
-    b1 = compile_ast_to_nfa(ast->unary_child);
-    switch (ast->unary_operator){
-        case '*':
-            add_nfa_path_epsilon(return_value.start,b1.start);
-            add_nfa_path_epsilon(b1.end,return_value.end);
-            add_nfa_path_epsilon(b1.end,b1.start);
-            add_nfa_path_epsilon(return_value.start,return_value.end);
-        break;
-        case '+':
-            add_nfa_path_epsilon(return_value.start,b1.start);
-            add_nfa_path_epsilon(b1.end,return_value.end);
-            add_nfa_path_epsilon(b1.end,b1.start);
-        break;
-        case '?':
-            add_nfa_path_epsilon(return_value.start,b1.start);
-            add_nfa_path_epsilon(b1.end,return_value.end);
-            add_nfa_path_epsilon(return_value.start,return_value.end);
-        break;
-        default:
-        ERROR("Unhandled binary operator");
-        break;
+    b1 = compile_ast_to_nfa(ast->range_child);
+    if(ast->range_low == 0 && ast->range_high == 0){
+        add_nfa_path_epsilon(return_value.start,b1.start);
+        add_nfa_path_epsilon(b1.end,return_value.end);
+        add_nfa_path_epsilon(return_value.start,return_value.end);
+        add_nfa_path_epsilon(b1.end,b1.start);
+    }else if(ast->range_low == 0 && ast->range_high == 1){
+        add_nfa_path_epsilon(return_value.start,b1.start);
+        add_nfa_path_epsilon(b1.end,return_value.end);
+        add_nfa_path_epsilon(return_value.start,return_value.end);
+    }else if(ast->range_low == 1 && ast->range_high == 0){
+        add_nfa_path_epsilon(return_value.start,b1.start);
+        add_nfa_path_epsilon(b1.end,return_value.end);
+        add_nfa_path_epsilon(b1.end,b1.start);
+    }else{
+        ERROR("Unhandled dispatch range");
     }
+
     return return_value;
 }
 
@@ -133,8 +129,8 @@ struct expression compile_ast_to_nfa(struct ast_node *ast){
         case ast_node_type_binary:
             return dispatch_binary(ast);
         break;
-        case ast_node_type_unary:
-            return dispatch_unary(ast);
+        case ast_node_type_range:
+            return dispatch_range(ast);
         break;
         case ast_node_type_combiner:
             return dispatch_combiner(ast);
