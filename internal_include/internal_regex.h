@@ -10,6 +10,7 @@ enum ast_node_type{
     ast_node_type_character,
     ast_node_type_binary,
     ast_node_type_unary,
+    ast_node_type_range,
     ast_node_type_combiner,
 };
 
@@ -37,6 +38,11 @@ struct ast_node{
         };
         struct{
             uint64_t character_characters[4];
+        };
+        struct{
+            size_t range_low;
+            size_t range_high;
+            struct ast_node *range_child;
         };
     };
 };

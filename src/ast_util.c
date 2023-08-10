@@ -17,6 +17,9 @@ void free_ast(struct ast_node *head){
             free_ast(head->combiner_left);
             free_ast(head->combiner_right);
         break;
+        case ast_node_type_range:
+            free_ast(head->range_child);
+        break;
         case ast_node_type_string:
         default:
             fprintf(stderr,"ERROR: Unimplemented free for ast node type");
@@ -41,6 +44,9 @@ size_t count_ast_nodes(struct ast_node *head){
         case ast_node_type_combiner:
             count += count_ast_nodes(head->combiner_left);
             count += count_ast_nodes(head->combiner_right);
+        break;
+        case ast_node_type_range:
+            count += count_ast_nodes(head->range_child);
         break;
         case ast_node_type_string:
             return 1;
