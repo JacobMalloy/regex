@@ -7,6 +7,7 @@
 
 #define PARSE_ERROR(x) {fprintf(stderr,"PARSE_ERROR: %s\n",x);exit(1);}
 
+static const char const * special_characters="()*+?[]";
 
 struct text_info{
     char *start;
@@ -93,45 +94,44 @@ static struct ast_node *group(struct text_info *text_info){
 static struct ast_node *atom(struct text_info *text_info){
     struct ast_node *return_node, *tmp_node;
     return_node = group(text_info);
-    switch (*(text_info->location)){
-        case '*':
-            tmp_node = new_ast_node();
-            tmp_node->type_tag = ast_node_type_range;
-            tmp_node->range_child = return_node;
-            tmp_node->range_low = 0;
-            tmp_node->range_high = 0;
+    if (*(text_info->location) == '*'){
+        tmp_node = new_ast_node();
+        tmp_node->type_tag = ast_node_type_range;
+        tmp_node->range_child = return_node;
+        tmp_node->range_low = 0;
+        tmp_node->range_high = 0;
+        text_info->location += 1;
+        return_node = tmp_node;
+    }
+    else if (*(text_info->location) == '+'){
+        tmp_node = new_ast_node();
+        tmp_node->type_tag = ast_node_type_range;
+        tmp_node->range_child = return_node;
+        tmp_node->range_low = 1;
+        tmp_node->range_high = 0;
+        text_info->location += 1;
+        return_node = tmp_node;
+    }
+    else if (*(text_info->location) == '?'){
+        tmp_node = new_ast_node();
+        tmp_node->type_tag = ast_node_type_range;
+        tmp_node->range_child = return_node;
+        tmp_node->range_low = 0;
+        tmp_node->range_high = 1;
+        text_info->location += 1;
+        return_node = tmp_node;
+    }
+    else if (*(text_info->location) == '|'){
+        tmp_node = return_node;
+        return_node = ast_create_or_node();
+        while(1){
+            ast_add_to_or_node(return_node,tmp_node);
+            if(*(text_info->location) != '|'){
+                break;
+            }
             text_info->location += 1;
-            return_node = tmp_node;
-        break;
-        case '+':
-            tmp_node = new_ast_node();
-            tmp_node->type_tag = ast_node_type_range;
-            tmp_node->range_child = return_node;
-            tmp_node->range_low = 1;
-            tmp_node->range_high = 0;
-            text_info->location += 1;
-            return_node = tmp_node;
-        break;
-        case '?':
-            tmp_node = new_ast_node();
-            tmp_node->type_tag = ast_node_type_range;
-            tmp_node->range_child = return_node;
-            tmp_node->range_low = 0;
-            tmp_node->range_high = 1;
-            text_info->location += 1;
-            return_node = tmp_node;
-        break;
-        case '|':
-            tmp_node = new_ast_node();
-            tmp_node->type_tag = ast_node_type_binary;
-            tmp_node->binary_left = return_node;
-            tmp_node->binary_operator = *(text_info->location);
-            text_info->location += 1;
-            tmp_node->binary_right = group(text_info);
-            return_node = tmp_node;
-        break;
-        default:
-        break;
+            tmp_node = group(text_info);
+        }
     }
 
     return return_node;
@@ -140,7 +140,7 @@ static struct ast_node *atom(struct text_info *text_info){
 static struct ast_node *expression(struct text_info *text_info){
     struct ast_node *return_node;
     return_node = atom(text_info);
-    while(*text_info->location){
+    while(*text_info->location && *text_info->location != ')'){
         struct ast_node *tmp_node;
         tmp_node = new_ast_node();
         tmp_node->type_tag = ast_node_type_combiner;
