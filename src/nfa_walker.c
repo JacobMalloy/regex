@@ -1,3 +1,4 @@
+#ifdef BACKTRACKING_NFA
 #include "regex.h"
 #include "backtracking_nfa.h"
 #include <stdlib.h>
@@ -97,3 +98,6 @@ int match(regex_t regex_data,char *string){
     }
     return 0;
 }
+
+
+#endif //BACKTRACKING_NFA

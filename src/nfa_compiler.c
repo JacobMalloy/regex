@@ -1,3 +1,4 @@
+#ifdef BACKTRACKING_NFA
 #include "internal_regex.h"
 #include "backtracking_nfa.h"
 #include <stdint.h>
@@ -66,22 +67,14 @@ static struct expression dispatch_character(struct ast_node *ast){
 }
 
 
-static struct expression dispatch_binary(struct ast_node *ast){
-    struct expression b1,b2,return_value;
+static struct expression dispatch_or(struct ast_node *ast){
+    struct expression b1,return_value;
     return_value.start = new_nfa_node();
     return_value.end = new_nfa_node();
-    b1 = compile_ast_to_nfa(ast->binary_left);
-    b2 = compile_ast_to_nfa(ast->binary_right);
-    switch (ast->binary_operator){
-        case '|':
-            add_nfa_path_epsilon(return_value.start,b1.start);
-            add_nfa_path_epsilon(return_value.start,b2.start);
-            add_nfa_path_epsilon(b1.end,return_value.end);
-            add_nfa_path_epsilon(b2.end,return_value.end);
-        break;
-        default:
-            ERROR("Unhandled binary operator");
-        break;
+    for(size_t i = 0;i < ast->or_length; i++){
+        b1 = compile_ast_to_nfa(ast->or_data[i]);
+        add_nfa_path_epsilon(return_value.start,b1.start);
+        add_nfa_path_epsilon(b1.end,return_value.end);
     }
     return return_value;
 }
@@ -126,8 +119,8 @@ struct expression compile_ast_to_nfa(struct ast_node *ast){
         case ast_node_type_character:
             return dispatch_character(ast);
         break;
-        case ast_node_type_binary:
-            return dispatch_binary(ast);
+        case ast_node_type_or:
+            return dispatch_or(ast);
         break;
         case ast_node_type_range:
             return dispatch_range(ast);
@@ -209,3 +202,4 @@ void regex_free(regex_t regex_info){
 }
 
 #undef ERROR
+#endif  //BACKTRACKING_NFA
