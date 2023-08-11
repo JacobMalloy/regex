@@ -32,6 +32,13 @@ int main(){
     test("[ab]+","",NULL,0);
     test("[a-zA-Z]+","abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",NULL,1);
     test("[a-z]+","1",NULL,0);
+    test("a|b","a",NULL,1);
+    test("a|b","c",NULL,0);
+    test("a|b|c","c",NULL,1);
+    test("a|b|c","c",NULL,1);
+    test("(abd)|b|c|a","c",NULL,1);
+    test("(abd)|b|c|a","abd",NULL,1);
+    test("(abd)|b|c|a","ab",NULL,1);
     fprintf(stderr,"\n\nAll Tests Passed\n");
 
     return 0;
